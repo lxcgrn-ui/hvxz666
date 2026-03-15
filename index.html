@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>模擬控制台</title>
+    <style>
+        /* 基礎樣式 */
+        body { font-family: sans-serif; background: #f0f0f0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        
+        /* 漂浮視窗樣式 */
+        .modal { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 300px; text-align: center; }
+        input { width: 90%; margin: 10px 0; padding: 8px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #007bff; color: white; }
+        
+        /* 操作按鈕組 */
+        .controls { display: none; margin-top: 20px; }
+        .btn-start { background: #28a745; }
+        .btn-stop { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div id="setupModal" class="modal">
+        <h3>系統設定</h3>
+        <input type="text" id="phone" placeholder="輸入電話號碼">
+        <input type="text" id="target" placeholder="輸入目標群組">
+        <button onclick="confirmSetup()">確定</button>
+    </div>
+
+    <div id="controlPanel" class="controls">
+        <button class="btn-start" onclick="action('開始')">開始攻擊</button>
+        <button class="btn-stop" onclick="action('停止')">停止攻擊</button>
+    </div>
+
+    <script>
+        function confirmSetup() {
+            const phone = document.getElementById('phone').value;
+            const target = document.getElementById('target').value;
+            
+            if(phone && target) {
+                document.getElementById('setupModal').style.display = 'none';
+                document.getElementById('controlPanel').style.display = 'block';
+                console.log("已設定目標: " + target + ", 號碼: " + phone);
+            } else {
+                alert("請填寫所有欄位");
+            }
+        }
+
+        function action(type) {
+            alert("模擬系統指令: " + type);
+        }
+    </script>
+</body>
+</html>
