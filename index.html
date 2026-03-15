@@ -2,12 +2,14 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>SYSTEM_INTERFACE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_CORE_INTERFACE</title>
     <style>
+        /* 基礎樣式：深色高對比主題 */
         body { 
-            background: #050505; 
+            background: #000000; 
             color: #00ff41; 
-            font-family: 'Courier New', monospace; 
+            font-family: 'Consolas', 'Courier New', monospace; 
             height: 100vh; 
             display: flex; 
             justify-content: center; 
@@ -16,119 +18,183 @@
             margin: 0; 
         }
 
-        .modal {
-            background: rgba(10, 15, 10, 0.9);
-            border: 1px solid #00ff41;
-            padding: 50px;
-            width: 650px;
-            box-shadow: 0 0 35px rgba(0, 255, 65, 0.7), inset 0 0 20px rgba(0, 255, 65, 0.3);
-            text-align: center;
+        /* 特效动画：輕微震動/晃動效果 */
+        @keyframes subtle-vibrate {
+            0% { transform: translate(1px, 1px); }
+            10% { transform: translate(-1px, -1px); }
+            20% { transform: translate(1px, -1px); }
+            30% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            60% { transform: translate(1px, -1px); }
+            70% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, 1px); }
+            90% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
         }
 
+        /* 特效动画：閃爍效果 */
+        @keyframes flicker {
+            0% { opacity: 0.9; }
+            5% { opacity: 0.8; }
+            10% { opacity: 1; }
+            15% { opacity: 0.9; }
+            20% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        /* 視窗主體：大視窗與光澤特效 */
+        .modal {
+            background: rgba(10, 15, 10, 0.9);
+            border: 2px solid #00ff41;
+            padding: 60px;
+            width: 750px; /* 擴大的視窗尺寸 */
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.7), inset 0 0 30px rgba(0, 255, 65, 0.4);
+            text-align: center;
+            animation: flicker 2s infinite, subtle-vibrate 0.1s infinite; /* 加入震動與閃爍動畫 */
+            position: relative;
+        }
+
+        /* 霓虹燈標題 */
+        h2 {
+            font-size: 28px;
+            text-shadow: 0 0 10px #00ff41;
+            margin-bottom: 30px;
+        }
+
+        /* 高科技輸入框 */
         input { 
             width: 85%; 
-            background: #000; 
+            background: rgba(0, 0, 0, 0.7); 
             border: 1px solid #00ff41; 
             color: #00ff41; 
-            padding: 15px; 
+            padding: 18px; 
             margin: 20px 0; 
-            font-size: 18px;
+            font-size: 20px;
             box-sizing: border-box;
+            font-family: inherit;
         }
 
         input:focus {
             outline: none;
-            box-shadow: 0 0 10px #00ff41;
+            box-shadow: 0 0 15px #00ff41;
+            background: rgba(0, 20, 0, 0.8);
         }
 
+        /* 高科技按鈕 */
         button { 
-            background: #001100; 
+            background: transparent; 
             border: 1px solid #00ff41; 
             color: #00ff41; 
-            padding: 15px 40px; 
+            padding: 18px 50px; 
             cursor: pointer; 
-            font-size: 18px; 
+            font-size: 20px; 
             margin: 15px; 
+            font-family: inherit;
             font-weight: bold;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
         }
 
         button:hover { 
             background: #00ff41; 
             color: #000; 
-            box-shadow: 0 0 20px #00ff41; 
+            box-shadow: 0 0 30px #00ff41; 
         }
 
+        /* 控制面板區塊 */
         #controlPanel { display: none; }
         
+        /* 數據日誌顯示區域：高科技滾動效果 */
         #logs { 
-            margin-top: 30px; 
+            margin-top: 40px; 
             text-align: left; 
-            height: 250px; 
+            height: 300px; /* 擴大數據區域高度 */
             overflow-y: auto; 
-            font-size: 14px; 
+            font-size: 16px; 
             border: 1px solid #333; 
-            padding: 15px; 
-            background: #020202;
-            box-shadow: inset 0 0 10px #000;
+            padding: 20px; 
+            background: rgba(5, 5, 5, 0.9);
+            box-shadow: inset 0 0 15px #000;
+        }
+
+        #logs::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #logs::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            box-shadow: 0 0 5px #00ff41;
         }
     </style>
 </head>
 <body>
 
     <div id="setupModal" class="modal">
-        <h2>SYSTEM_INITIALIZATION</h2>
-        <input type="text" id="phone" placeholder="ENTER_PHONE_NUMBER">
-        <input type="text" id="target" placeholder="SELECT_TARGET_GROUP">
+        <h2>[ SYSTEM_INITIALIZATION ]</h2>
+        <input type="text" id="phone" placeholder="ENTER_TARGET_PHONE_ID">
+        <input type="text" id="target" placeholder="ASSIGN_GROUP_HASH_NODE">
         <br>
-        <button onclick="confirmSetup()">CONFIRM_ACCESS</button>
+        <button onclick="confirmSetup()">INITIALIZE</button>
     </div>
 
     <div id="controlPanel" class="modal">
-        <h2>SYSTEM_RUNNING</h2>
+        <h2>[ ACTIVE_CORE_EXECUTION ]</h2>
         <button onclick="startAction()">[ START ]</button>
         <button onclick="stopAction()">[ STOP ]</button>
         <div id="logs"></div>
     </div>
 
     <script>
+        // 核心邏輯處理
+
+        // 初始化資訊確認
         function confirmSetup() {
             const phoneVal = document.getElementById('phone').value;
             const targetVal = document.getElementById('target').value;
             
+            // 簡易驗證
             if(phoneVal.trim() !== "" && targetVal.trim() !== "") {
+                // 切換介面顯示狀態
                 document.getElementById('setupModal').style.display = 'none';
                 document.getElementById('controlPanel').style.display = 'block';
             } else {
-                alert("ERROR: FIELDS_CANNOT_BE_EMPTY");
+                alert("CRITICAL_ERROR: FIELDS_CANNOT_BE_EMPTY");
             }
         }
 
-        let actionInterval;
+        let actionInterval; // 用於儲存計時器
 
+        // 開始執行程序
         function startAction() {
             const logs = document.getElementById('logs');
-            if(actionInterval) clearInterval(actionInterval);
+            if(actionInterval) clearInterval(actionInterval); // 防止重複執行
             
             const initEntry = document.createElement('div');
-            initEntry.style.color = "#fff";
-            initEntry.innerText = `[${new Date().toLocaleTimeString()}] SYSTEM_STARTING_SEQUENCE...`;
+            initEntry.style.color = "#ffffff";
+            initEntry.innerText = `[${new Date().toLocaleTimeString()}] INITIATING_STREAMING_PROTOCOL...`;
             logs.appendChild(initEntry);
 
+            // 每 150 毫秒產生一條封包傳輸日誌
             actionInterval = setInterval(() => {
                 const entry = document.createElement('div');
-                const randomHex = Math.floor(Math.random()*16777215).toString(16).toUpperCase();
-                entry.innerText = `[${new Date().toLocaleTimeString()}] DATA_PACKET_SENT_TO_NODE_0x${randomHex}`;
+                const randomHex = Math.floor(Math.random()*16777215).toString(16).toUpperCase().padStart(6, '0');
+                const randomNode = Math.floor(Math.random()*256);
+                entry.innerText = `[${new Date().toLocaleTimeString()}] DATA_PACKET_ROUTE::NODE_${randomNode}::0x${randomHex}::ACK`;
                 logs.appendChild(entry);
+                // 自動捲動到最下方
                 logs.scrollTop = logs.scrollHeight;
             }, 150);
         }
 
+        // 停止執行程序
         function stopAction() {
-            clearInterval(actionInterval);
+            clearInterval(actionInterval); // 停止計時器
             const logs = document.getElementById('logs');
             const entry = document.createElement('div');
-            entry.style.color = "red";
-            entry.innerText = `[${new Date().toLocaleTimeString()}] PROCESS_TERMINATED_BY_USER`;
+            entry.style.color = "#ff0000";
+            entry.style.fontWeight = "bold";
+            entry.innerText = `[${new Date().toLocaleTimeString()}] EXECUTION_TERMINATED_BY_OPERATOR`;
             logs.appendChild(entry);
             logs.scrollTop = logs.scrollHeight;
         }
