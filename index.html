@@ -2,52 +2,135 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>模擬控制台</title>
+    <title>SYSTEM_INTERFACE</title>
     <style>
-        /* 基礎樣式 */
-        body { font-family: sans-serif; background: #f0f0f0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        body { 
+            background: #050505; 
+            color: #00ff41; 
+            font-family: 'Courier New', monospace; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            overflow: hidden; 
+            margin: 0; 
+        }
+
+        .modal {
+            background: rgba(10, 15, 10, 0.9);
+            border: 1px solid #00ff41;
+            padding: 50px;
+            width: 650px;
+            box-shadow: 0 0 35px rgba(0, 255, 65, 0.7), inset 0 0 20px rgba(0, 255, 65, 0.3);
+            text-align: center;
+        }
+
+        input { 
+            width: 85%; 
+            background: #000; 
+            border: 1px solid #00ff41; 
+            color: #00ff41; 
+            padding: 15px; 
+            margin: 20px 0; 
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        button { 
+            background: #001100; 
+            border: 1px solid #00ff41; 
+            color: #00ff41; 
+            padding: 15px 40px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            margin: 15px; 
+            font-weight: bold;
+        }
+
+        button:hover { 
+            background: #00ff41; 
+            color: #000; 
+            box-shadow: 0 0 20px #00ff41; 
+        }
+
+        #controlPanel { display: none; }
         
-        /* 漂浮視窗樣式 */
-        .modal { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 300px; text-align: center; }
-        input { width: 90%; margin: 10px 0; padding: 8px; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #007bff; color: white; }
-        
-        /* 操作按鈕組 */
-        .controls { display: none; margin-top: 20px; }
-        .btn-start { background: #28a745; }
-        .btn-stop { background: #dc3545; }
+        #logs { 
+            margin-top: 30px; 
+            text-align: left; 
+            height: 250px; 
+            overflow-y: auto; 
+            font-size: 14px; 
+            border: 1px solid #333; 
+            padding: 15px; 
+            background: #020202;
+            box-shadow: inset 0 0 10px #000;
+        }
     </style>
 </head>
 <body>
 
     <div id="setupModal" class="modal">
-        <h3>系統設定</h3>
-        <input type="text" id="phone" placeholder="輸入電話號碼">
-        <input type="text" id="target" placeholder="輸入目標群組">
-        <button onclick="confirmSetup()">確定</button>
+        <h2>SYSTEM_INITIALIZATION</h2>
+        <input type="text" id="phone" placeholder="ENTER_PHONE_NUMBER">
+        <input type="text" id="target" placeholder="SELECT_TARGET_GROUP">
+        <br>
+        <button onclick="confirmSetup()">CONFIRM_ACCESS</button>
     </div>
 
-    <div id="controlPanel" class="controls">
-        <button class="btn-start" onclick="action('開始')">開始攻擊</button>
-        <button class="btn-stop" onclick="action('停止')">停止攻擊</button>
+    <div id="controlPanel" class="modal">
+        <h2>SYSTEM_RUNNING</h2>
+        <button onclick="startAction()">[ START ]</button>
+        <button onclick="stopAction()">[ STOP ]</button>
+        <div id="logs"></div>
     </div>
 
     <script>
         function confirmSetup() {
-            const phone = document.getElementById('phone').value;
-            const target = document.getElementById('target').value;
+            const phoneVal = document.getElementById('phone').value;
+            const targetVal = document.getElementById('target').value;
             
-            if(phone && target) {
+            if(phoneVal.trim() !== "" && targetVal.trim() !== "") {
                 document.getElementById('setupModal').style.display = 'none';
                 document.getElementById('controlPanel').style.display = 'block';
-                console.log("已設定目標: " + target + ", 號碼: " + phone);
             } else {
-                alert("請填寫所有欄位");
+                alert("ERROR: FIELDS_CANNOT_BE_EMPTY");
             }
         }
 
-        function action(type) {
-            alert("模擬系統指令: " + type);
+        let actionInterval;
+
+        function startAction() {
+            const logs = document.getElementById('logs');
+            if(actionInterval) clearInterval(actionInterval);
+            
+            const initEntry = document.createElement('div');
+            initEntry.style.color = "#fff";
+            initEntry.innerText = `[${new Date().toLocaleTimeString()}] SYSTEM_STARTING_SEQUENCE...`;
+            logs.appendChild(initEntry);
+
+            actionInterval = setInterval(() => {
+                const entry = document.createElement('div');
+                const randomHex = Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+                entry.innerText = `[${new Date().toLocaleTimeString()}] DATA_PACKET_SENT_TO_NODE_0x${randomHex}`;
+                logs.appendChild(entry);
+                logs.scrollTop = logs.scrollHeight;
+            }, 150);
+        }
+
+        function stopAction() {
+            clearInterval(actionInterval);
+            const logs = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.style.color = "red";
+            entry.innerText = `[${new Date().toLocaleTimeString()}] PROCESS_TERMINATED_BY_USER`;
+            logs.appendChild(entry);
+            logs.scrollTop = logs.scrollHeight;
         }
     </script>
 </body>
